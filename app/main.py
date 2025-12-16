@@ -4,7 +4,6 @@ from fastapi.middleware.cors import CORSMiddleware
 import io
 from PIL import Image
 import rembg
-import base64
 
 app = FastAPI(
     title="BG Remover API",
@@ -46,19 +45,18 @@ async def health():
     return {"status": "healthy"}
 
 def get_html():
-    return """
-<!DOCTYPE html>
+    html = '''<!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>✨ BG Remover - Remove Image Backgrounds</title>
+    <title>BG Remover - Remove Image Backgrounds</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Segoe UI', sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; position: relative; overflow: hidden; }
+        body { font-family: "Segoe UI", sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; position: relative; overflow: hidden; }
         
-        .sparkle { position: fixed; pointer-events: none; font-size: 2em; animation: sparkle 2s ease-out forwards; }
-        @keyframes sparkle { 0% { opacity: 1; transform: translate(0, 0) scale(1); } 100% { opacity: 0; transform: translate(var(--tx), var(--ty)) scale(0); } }
+        .sparkle { position: fixed; pointer-events: none; font-size: 2em; animation: sparkle-anim 2s ease-out forwards; }
+        @keyframes sparkle-anim { 0% { opacity: 1; transform: translate(0, 0) scale(1); } 100% { opacity: 0; transform: translate(var(--tx), var(--ty)) scale(0); } }
         
         .container { background: white; border-radius: 20px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); max-width: 700px; width: 100%; padding: 40px; z-index: 10; position: relative; }
         h1 { color: #333; margin-bottom: 10px; font-size: 2.5em; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
@@ -104,11 +102,11 @@ def get_html():
 </head>
 <body>
     <div class="container">
-        <h1>\u2728 BG Remover</h1>
+        <h1>✨ BG Remover</h1>
         <p class="subtitle">Remove image backgrounds instantly with AI</p>
         
         <div class="upload-area" id="uploadArea">
-            <div class="upload-icon">\ud83d\udcf7</div>
+            <div class="upload-icon">📷</div>
             <div style="color: #667eea; font-size: 1.1em; font-weight: 600; margin-bottom: 5px;">Click or drag your image</div>
             <div style="color: #999;">Supports JPG, PNG, WebP</div>
             <input type="file" id="fileInput" accept="image/*" />
@@ -140,7 +138,7 @@ def get_html():
                 </div>
             </div>
             <div style="text-align: center;">
-                <button class="download-btn" id="downloadBtn">\u2b07\ufe0f Download Result</button>
+                <button class="download-btn" id="downloadBtn">⬇️ Download Result</button>
             </div>
         </div>
     </div>
@@ -167,19 +165,19 @@ def get_html():
         });
         fileInput.addEventListener('change', processImage);
         
-        function createSparkles(e) {
+        function createSparkles() {
             for (let i = 0; i < 5; i++) {
                 const sparkle = document.createElement('div');
                 sparkle.className = 'sparkle';
-                sparkle.textContent = '\u2728';
+                sparkle.textContent = '✨';
                 const angle = (Math.PI * 2 * i) / 5;
                 const velocity = 100;
                 const tx = Math.cos(angle) * velocity;
                 const ty = Math.sin(angle) * velocity;
                 sparkle.style.setProperty('--tx', tx + 'px');
                 sparkle.style.setProperty('--ty', ty + 'px');
-                sparkle.style.left = e.clientX + 'px';
-                sparkle.style.top = e.clientY + 'px';
+                sparkle.style.left = window.innerWidth / 2 + 'px';
+                sparkle.style.top = window.innerHeight / 2 + 'px';
                 document.body.appendChild(sparkle);
                 setTimeout(() => sparkle.remove(), 2000);
             }
@@ -205,14 +203,14 @@ def get_html():
                 const formData = new FormData();
                 formData.append('file', file);
                 
-                progressFill.style.width = '30%';
+                setTimeout(() => { progressFill.style.width = '30%'; }, 300);
                 
                 const response = await fetch('/api/remove-background', {
                     method: 'POST',
                     body: formData
                 });
                 
-                progressFill.style.width = '70%';
+                setTimeout(() => { progressFill.style.width = '70%'; }, 1000);
                 
                 if (!response.ok) throw new Error('Processing failed');
                 
@@ -232,12 +230,12 @@ def get_html():
                     loading.classList.remove('show');
                     progressContainer.classList.remove('show');
                     previewContainer.classList.add('show');
-                    createSparkles(event);
+                    createSparkles();
                 }, 500);
             } catch (err) {
                 loading.classList.remove('show');
                 progressContainer.classList.remove('show');
-                error.textContent = '\u274c ' + err.message;
+                error.textContent = 'Error: ' + err.message;
                 error.classList.add('show');
             }
         }
@@ -252,4 +250,5 @@ def get_html():
     </script>
 </body>
 </html>
-    """
+'''
+    return html
