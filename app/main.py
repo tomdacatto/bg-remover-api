@@ -169,7 +169,7 @@ def get_html():
             for (let i = 0; i < 5; i++) {
                 const sparkle = document.createElement('div');
                 sparkle.className = 'sparkle';
-                sparkle.textContent = 'Sparkle';
+                sparkle.textContent = '✨';
                 const angle = (Math.PI * 2 * i) / 5;
                 const velocity = 100;
                 const tx = Math.cos(angle) * velocity;
