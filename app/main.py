@@ -1,5 +1,5 @@
 from fastapi import FastAPI, File, UploadFile, HTTPException
-from fastapi.responses import FileResponse, HTMLResponse
+from fastapi.responses import FileResponse, HTMLResponse, StreamingResponse
 from fastapi.middleware.cors import CORSMiddleware
 import io
 from PIL import Image
@@ -32,10 +32,10 @@ async def remove_background(file: UploadFile = File(...)):
         output = io.BytesIO()
         Image.fromarray(img_array).save(output, format="PNG")
         output.seek(0)
-        return FileResponse(
+        return StreamingResponse(
             io.BytesIO(output.getvalue()),
             media_type="image/png",
-            filename="removed_bg.png"
+            headers={"Content-Disposition": "attachment; filename=removed_bg.png"}
         )
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
