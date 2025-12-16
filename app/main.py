@@ -102,7 +102,7 @@ def get_html():
 </head>
 <body>
     <div class="container">
-        <h1>✨ BG Remover</h1>
+        <h1>Sparkle BG Remover</h1>
         <p class="subtitle">Remove image backgrounds instantly with AI</p>
         
         <div class="upload-area" id="uploadArea">
@@ -133,12 +133,12 @@ def get_html():
                     <img id="originalImage" src="" alt="Original image" />
                 </div>
                 <div class="image-box">
-                    <h3>✨ No Background</h3>
+                    <h3>Sparkle No Background</h3>
                     <img id="resultImage" src="" alt="Result image" />
                 </div>
             </div>
             <div style="text-align: center;">
-                <button class="download-btn" id="downloadBtn">⬇️ Download Result</button>
+                <button class="download-btn" id="downloadBtn">Download Result</button>
             </div>
         </div>
     </div>
@@ -169,7 +169,7 @@ def get_html():
             for (let i = 0; i < 5; i++) {
                 const sparkle = document.createElement('div');
                 sparkle.className = 'sparkle';
-                sparkle.textContent = '✨';
+                sparkle.textContent = 'Sparkle';
                 const angle = (Math.PI * 2 * i) / 5;
                 const velocity = 100;
                 const tx = Math.cos(angle) * velocity;
@@ -249,6 +249,5 @@ def get_html():
         }
     </script>
 </body>
-</html>
-'''
+</html>'''
     return html
