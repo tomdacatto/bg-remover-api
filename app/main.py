@@ -20,6 +20,17 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+@app.on_event("startup")
+async def startup_event():
+    import logging
+    logging.info("Pre-loading rembg model...")
+    try:
+        rembg.remove(Image.new('RGB', (1, 1)))
+        logging.info("rembg model loaded successfully")
+    except Exception as e:
+        logging.error(f"Failed to pre-load rembg model: {e}")
+
+
 @app.get("/")
 async def root():
     return HTMLResponse(get_html())
