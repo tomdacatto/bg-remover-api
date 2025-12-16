@@ -32,11 +32,10 @@ async def remove_background(file: UploadFile = File(...)):
         Image.fromarray(img_array).save(output, format="PNG")
         output.seek(0)
    return Response(
-                content=output.getvalue(),
-                media_type="image/png",
-                headers={"Content-Disposition": "attachment; filename=removed_bg.png"}
-            )
-    except Exception as e:
+            content=output.getvalue(),
+                a_type="image/png",
+            headers={"Content-Disposition": "attachment; filename=removed_bg.png"}
+              except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
 
 @app.get("/api/health")
