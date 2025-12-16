@@ -1,7 +1,8 @@
 from fastapi import FastAPI, File, UploadFile, HTTPException
-from fastapi.responses import HTMLResponse, Response
+from fastapi.responses import HTMLResponse, StreamingResponse
 from fastapi.middleware.cors import CORSMiddleware
 import io
+import gc
 from PIL import Image
 import rembg
 
@@ -28,16 +29,20 @@ async def remove_background(file: UploadFile = File(...)):
     try:
         contents = await file.read()
         img = Image.open(io.BytesIO(contents))
+        if img.mode != 'RGB':
+            img = img.convert('RGB')
         img_result = rembg.remove(img)
         output = io.BytesIO()
         img_result.save(output, format="PNG")
         output.seek(0)
-        return Response(
-            content=output.getvalue(),
+        gc.collect()
+        return StreamingResponse(
+            iter([output.getvalue()]),
             media_type="image/png",
             headers={"Content-Disposition": "attachment; filename=removed_bg.png"}
         )
     except Exception as e:
+        gc.collect()
         raise HTTPException(status_code=400, detail=str(e))
 
 @app.get("/api/health")
