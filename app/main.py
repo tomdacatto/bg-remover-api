@@ -28,9 +28,9 @@ async def remove_background(file: UploadFile = File(...)):
     try:
         contents = await file.read()
         img = Image.open(io.BytesIO(contents))
-        img_array = rembg.remove(img)
+        img_result = rembg.remove(img)
         output = io.BytesIO()
-        Image.fromarray(img_array).save(output, format="PNG")
+        img_result.save(output, format="PNG")
         output.seek(0)
         return Response(
             content=output.getvalue(),
