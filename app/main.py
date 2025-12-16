@@ -1,7 +1,7 @@
 from fastapi import FastAPI, File, UploadFile, HTTPException
-from fastapi.responses import FileResponse, HTMLResponse, Responsefrom fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse, HTMLResponse, Response
+from fastapi.middleware.cors import CORSMiddleware
 import io
-from PIL import Image
 import rembg
 
 app = FastAPI(
