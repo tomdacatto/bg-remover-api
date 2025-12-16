@@ -1,7 +1,8 @@
 from fastapi import FastAPI, File, UploadFile, HTTPException
-from fastapi.responses import FileResponse, HTMLResponse, Response
+from fastapi.responses import HTMLResponse, Response
 from fastapi.middleware.cors import CORSMiddleware
 import io
+from PIL import Image
 import rembg
 
 app = FastAPI(
@@ -31,11 +32,12 @@ async def remove_background(file: UploadFile = File(...)):
         output = io.BytesIO()
         Image.fromarray(img_array).save(output, format="PNG")
         output.seek(0)
-   return Response(
+        return Response(
             content=output.getvalue(),
-                a_type="image/png",
+            media_type="image/png",
             headers={"Content-Disposition": "attachment; filename=removed_bg.png"}
-              except Exception as e:
+        )
+    except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
 
 @app.get("/api/health")
@@ -131,7 +133,7 @@ def get_html():
                     <img id="originalImage" src="" alt="Original image" />
                 </div>
                 <div class="image-box">
-                    <h3>Sparkle No Background</h3>
+                    <h3>No Background</h3>
                     <img id="resultImage" src="" alt="Result image" />
                 </div>
             </div>
